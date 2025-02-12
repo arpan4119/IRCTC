@@ -74,11 +74,7 @@ npx sequelize db:seed:all
 ## **Running the Server**
 Start the application:
 ```sh
-npm start
-```
-or (for development mode with auto-restart)
-```sh
-npm run dev
+node server.js
 ```
 
 The server should now be running at **`http://localhost:5000`**.
@@ -99,13 +95,6 @@ The server should now be running at **`http://localhost:5000`**.
 ### Booking
 - **POST** `/api/bookings/book` → Book a Ticket (Requires Authentication)
 - **GET** `/api/bookings/:id` → Get Booking Details (Requires Authentication)
-
----
-
-##  **Running Tests (Optional)**
-```sh
-npm test
-```
 
 ---
 
