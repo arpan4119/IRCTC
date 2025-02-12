@@ -14,7 +14,6 @@ app.get('/', (req, res) => {
     res.send('IRCTC Railway Management System API is Running 🚆');
 });
 
-
 // Connect to the database
 sequelize.authenticate().then(() => {
     console.log('Database connected successfully');

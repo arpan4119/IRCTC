@@ -2,8 +2,8 @@ const { Train } = require('../models/trainModel');
 
 exports.addTrain = async (req, res) => {
     try {
-        const { name, source, destination, totalSeats } = req.body;
-        const train = await Train.create({ name, source, destination, totalSeats, availableSeats: totalSeats });
+        const { name, source, departureTime, destination, totalSeats } = req.body;
+        const train = await Train.create({ name, source, destination, departureTime, totalSeats, availableSeats: totalSeats });
         res.status(201).json(train);
     } catch (err) {
         res.status(500).json({ error: err.message });
