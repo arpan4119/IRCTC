@@ -1,8 +1,8 @@
-// models/userModel.js
+// models/trainModel.js
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const User = sequelize.define('User', {
+const Train = sequelize.define('Train', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -12,30 +12,28 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    username: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true
-        }
-    },
-    password: {
+    source: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    role: {
-        type: DataTypes.ENUM('admin', 'user'),
-        allowNull: false,
-        defaultValue: 'user'
+    destination: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    departureTime: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    totalSeats: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    availableSeats: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 }, {
     timestamps: true
 });
 
-module.exports = User;
+module.exports = Train;
