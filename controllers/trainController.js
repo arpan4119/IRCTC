@@ -20,7 +20,7 @@ exports.getTrains = async (req, res) => {
     }
 };
 
-exports.updateTrainSeats = async (req, res) => {
+exports.addTrainSeats = async (req, res) => {
     try {
         const { trainId } = req.params;
         const { totalSeats } = req.body;
@@ -36,7 +36,8 @@ exports.updateTrainSeats = async (req, res) => {
             return res.status(404).json({ error: 'Train not found' });
         }
 
-        train.totalSeats = totalSeats;
+        train.totalSeats += totalSeats;
+        train.availableSeats += totalSeats;
         await train.save();
 
         res.json({ message: 'Train seats updated successfully', train });
