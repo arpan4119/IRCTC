@@ -26,7 +26,7 @@ app.use('/api/trains', trainRoutes);
 app.use('/api/bookings', authenticateToken, bookingRoutes);
 
 // Start Server
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 sequelize.sync().then(() => {
     app.listen(port, () => console.log('Server running on port:', port));
 }).catch(err => console.log(err));
