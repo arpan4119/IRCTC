@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post('/add', authenticateToken, authorizeRole('admin'), addTrain);
 router.get('/', getTrains);
-router.put('/update-seats/:trainId', authenticateToken, authorizeRole('admin'), addTrainSeats);
+router.put('/add-seats/:trainId', authenticateToken, authorizeRole('admin'), addTrainSeats);
 
 module.exports = router;
