@@ -1,4 +1,3 @@
-// models/bookingModel.js
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const User = require('./userModel');

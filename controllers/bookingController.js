@@ -1,27 +1,41 @@
-const { Booking, Train } = require('../models');
+const { Booking, Train } = require('../models/bookingModel');
 const { Sequelize } = require('sequelize');
+const sequelize = require('../config/database');
+const redisClient = require('../config/redis');
 
 exports.bookSeat = async (req, res) => {
     const { trainId, userId } = req.body;
     try {
-        const train = await Train.findByPk(trainId);
-        if (!train || train.availableSeats <= 0) {
-            return res.status(400).json({ message: 'No seats available' });
-        }
-        await sequelize.transaction(async (t) => {
-            const updatedTrain = await Train.findByPk(trainId, { lock: t.LOCK.UPDATE, transaction: t });
-            if (updatedTrain.availableSeats > 0) {
-                await updatedTrain.update({ availableSeats: updatedTrain.availableSeats - 1 }, { transaction: t });
-                const booking = await Booking.create({ trainId, userId }, { transaction: t });
-                res.status(201).json(booking);
-            } else {
-                res.status(400).json({ message: 'No seats available' });
+        const result = await sequelize.transaction(async (t) => {
+            // Use atomic SQL query to avoid race conditions
+            const updatedTrain = await Train.update(
+                { availableSeats: Sequelize.literal('availableSeats - 1') },
+                { 
+                    where: { id: trainId, availableSeats: { [Sequelize.Op.gt]: 0 } }, // Ensure seat availability
+                    returning: true,
+                    transaction: t
+                }
+            );
+
+            if (updatedTrain[1].length === 0) {
+                throw new Error('No seats available');
             }
+
+            // Create booking
+            const booking = await Booking.create({ trainId, userId }, { transaction: t });
+
+            // Invalidate Redis cache
+            await redisClient.del(`train_${trainId}`);
+
+            return booking;
         });
+
+        res.status(201).json(result);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(400).json({ message: err.message });
     }
 };
+
 
 exports.getBookingDetails = async (req, res) => {
     try {

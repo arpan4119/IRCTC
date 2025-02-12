@@ -22,7 +22,7 @@ sequelize.authenticate().then(() => {
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/trains', authenticateToken, authorizeRole('admin'), trainRoutes);
+app.use('/api/trains', trainRoutes);
 app.use('/api/bookings', authenticateToken, bookingRoutes);
 
 // Start Server

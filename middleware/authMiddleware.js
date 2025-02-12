@@ -1,23 +1,31 @@
-// Middleware for authentication
-const authenticateToken = (req, res, next) => {
+const jwt = require('jsonwebtoken');
+
+exports.authenticateToken = (req, res, next) => {
     const token = req.header('Authorization');
-    if (!token) return res.status(401).json({ message: 'Access Denied' });
-    
+    if (!token) return res.status(401).json({ message: 'Access Denied. No token provided' });
+
     try {
-        const verified = jwt.verify(token, process.env.JWT_SECRET);
+        const verified = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
         req.user = verified;
         next();
     } catch (err) {
-        res.status(400).json({ message: 'Invalid Token' });
+        res.status(403).json({ message: 'Invalid token' });
     }
 };
 
-// Middleware for role-based authorization
-const authorizeRole = (role) => {
+exports.authorizeRole = (role) => {
     return (req, res, next) => {
         if (req.user.role !== role) {
-            return res.status(403).json({ message: 'Forbidden: Insufficient privileges' });
+            return res.status(403).json({ message: 'Access Denied. Insufficient privileges' });
         }
         next();
     };
+};
+
+exports.verifyAdminApiKey = (req, res, next) => {
+    const apiKey = req.header('x-api-key');
+    if (!apiKey || apiKey !== process.env.ADMIN_API_KEY) {
+        return res.status(403).json({ message: 'Unauthorized access. Invalid API key' });
+    }
+    next();
 };
