@@ -23,9 +23,9 @@ exports.bookSeat = async (req, res) => {
                 throw new Error('No seats available');
             }
 
-            const seat = await generateSeatNumber(trainId);
+            const seatNumber = await generateSeatNumber(trainId);
             // Create booking
-            const booking = await Booking.create({ trainId, userId, seat }, { transaction: t });
+            const booking = await Booking.create({ trainId, userId, seatNumber }, { transaction: t });
 
             // Invalidate Redis cache
             await redisClient.del(`train_${trainId}`);

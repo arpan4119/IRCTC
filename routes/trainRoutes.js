@@ -1,5 +1,5 @@
 const express = require('express');
-const { addTrain, getTrains } = require('../controllers/trainController');
+const { addTrain, getTrains, updateTrainSeats } = require('../controllers/trainController');
 const { authenticateToken, authorizeRole } = require('../middleware/authMiddleware');
 
 const router = express.Router();

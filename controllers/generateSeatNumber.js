@@ -1,17 +1,15 @@
-const Train = require('../models/trainModel');
+const Booking = require('../models/bookingModel');
 
 async function generateSeatNumber(trainId) {
   try {
-    // Fetch train details using trainId
-    const train = await Train.findOne({ where: { id: trainId } });
+    const lastBooking = await Booking.findOne({
+        where: { trainId },
+        order: [['seatNumber', 'DESC']], // Get the highest seat number
+    });
 
-    if (!train) {
-      console.log("Train not found!");
-      return null;
-    }
+    // If no previous booking, start from 1, else assign the next seat
+    const seatNumber = lastBooking ? lastBooking.seatNumber + 1 : 1;
 
-    // Calculate seat number
-    const seatNumber = train.totalSeats - train.availableSeats + 1;
     return seatNumber;
   } catch (error) {
     console.error("Error fetching train details:", error);
