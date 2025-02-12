@@ -27,7 +27,8 @@ const Booking = sequelize.define('Booking', {
     },
     seatNumber: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 0
     }
 }, {
     timestamps: true

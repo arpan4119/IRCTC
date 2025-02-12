@@ -1,8 +1,8 @@
-const { Train } = require('../models/trainModel');
+const Train = require('../models/trainModel');
 
 exports.addTrain = async (req, res) => {
     try {
-        const { name, source, departureTime, destination, totalSeats } = req.body;
+        const { name, source, destination, departureTime, totalSeats } = req.body;
         const train = await Train.create({ name, source, destination, departureTime, totalSeats, availableSeats: totalSeats });
         res.status(201).json(train);
     } catch (err) {

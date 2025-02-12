@@ -1,7 +1,9 @@
-const { Booking, Train } = require('../models/bookingModel');
+const Booking = require('../models/bookingModel');
+const Train = require('../models/trainModel');
 const { Sequelize } = require('sequelize');
 const sequelize = require('../config/database');
 const redisClient = require('../config/redis');
+const generateSeatNumber = require('./generateSeatNumber');
 
 exports.bookSeat = async (req, res) => {
     const { trainId, userId } = req.body;
@@ -11,7 +13,7 @@ exports.bookSeat = async (req, res) => {
             const updatedTrain = await Train.update(
                 { availableSeats: Sequelize.literal('availableSeats - 1') },
                 { 
-                    where: { id: trainId, availableSeats: { [Sequelize.Op.gt]: 0 } }, // Ensure seat availability
+                    where: { id: trainId, availableSeats: { [Sequelize.Op.gt]: 0 } },
                     returning: true,
                     transaction: t
                 }
@@ -21,8 +23,9 @@ exports.bookSeat = async (req, res) => {
                 throw new Error('No seats available');
             }
 
+            const seat = generateSeatNumber(trainId);
             // Create booking
-            const booking = await Booking.create({ trainId, userId }, { transaction: t });
+            const booking = await Booking.create({ trainId, userId, seat }, { transaction: t });
 
             // Invalidate Redis cache
             await redisClient.del(`train_${trainId}`);
