@@ -1,4 +1,4 @@
-const Train = require('../models/Train');
+const Train = require('../models/trainModel');
 
 async function generateSeatNumber(trainId) {
   try {
@@ -18,3 +18,5 @@ async function generateSeatNumber(trainId) {
     return null;
   }
 }
+
+module.exports = generateSeatNumber;

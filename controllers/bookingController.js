@@ -23,7 +23,7 @@ exports.bookSeat = async (req, res) => {
                 throw new Error('No seats available');
             }
 
-            const seat = generateSeatNumber(trainId);
+            const seat = await generateSeatNumber(trainId);
             // Create booking
             const booking = await Booking.create({ trainId, userId, seat }, { transaction: t });
 
